@@ -1,0 +1,25 @@
+{
+  "name": "workouts",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "solid-js": "^0.26.5",
+    "solid-scripts": "0.0.56"
+  },
+  "dependencies": {
+    "classcat": "^5.0.3"
+  },
+  "scripts": {
+    "start": "solid-scripts start",
+    "build": "solid-scripts build",
+    "test": "solid-scripts test"
+  },
+  "browserslist": [
+    "Chrome 74",
+    "Firefox 63",
+    "Safari 11",
+    "Edge 17",
+    "Node 10"
+  ]
+}

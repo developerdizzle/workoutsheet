@@ -1,0 +1,51 @@
+.stats {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+}
+
+.stat {
+  flex: 1;
+}
+
+.stat input[type="number"] {
+  width: 4rem;
+}
+
+.weeks {
+  display: flex;
+  flex-direction: row;
+}
+
+.week {
+  flex: 1;
+  margin: 1rem;
+}
+
+.week--selected {
+  background-color: gray;
+  color: white;
+}
+
+.days {
+  display: flex;
+  flex-direction: row;
+}
+
+.day {
+  flex: 1;
+
+  text-align: center;
+}
+
+table {
+  margin: 0 auto;
+}
+
+td {
+  text-align: center;
+}
+
+body {
+  padding-bottom: 2rem;
+}
