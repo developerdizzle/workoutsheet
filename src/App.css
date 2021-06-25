@@ -1,30 +1,66 @@
+body {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.mdl-layout--fixed-header {
+  display: block !important;
+}
+
 .stats {
   display: flex;
+  justify-content: space-around;
   flex-direction: row;
-  padding: 1rem;
+  list-style-type: none;
+  margin: 0.5rem 0 0 0;
 }
 
-.stat {
-  flex: 1;
+.stats .title {
+  flex: 1 1;
 }
 
-.stat input[type="number"] {
+.stats .stat {
+  flex: 1 1;
+}
+
+.stats li {
+  /* border: 1px solid rgba(0,0,0,0.12); */
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.stats input[type="number"] {
   width: 4rem;
 }
 
 .weeks {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
-.week {
-  flex: 1;
-  margin: 1rem;
+.mdl-tabs__tab {
+  color: rgba(0,0,0,.54);
+  cursor: pointer;
 }
 
-.week--selected {
-  background-color: gray;
-  color: white;
+.mdl-tabs__tab.is-active {
+  color: black;
+  border-bottom: 2px solid black;
 }
 
 .days {
@@ -38,14 +74,18 @@
   text-align: center;
 }
 
-table {
+.sets {
   margin: 0 auto;
 }
 
-td {
-  text-align: center;
+.sets select {
+  max-width: 6rem;
 }
 
-body {
-  padding-bottom: 2rem;
+.exercise {
+  margin-bottom: 1rem;
+}
+
+section {
+  padding: 0.5rem;
 }
