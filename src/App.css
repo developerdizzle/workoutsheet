@@ -21,12 +21,9 @@ h3 {
   display: block !important;
 }
 
-.stats {
-  display: flex;
-  justify-content: space-around;
-  flex-direction: row;
-  list-style-type: none;
-  margin: 0.5rem 0 0 0;
+.mdl-layout__header-row {
+  height: 48px;
+  padding: 0 16px;
 }
 
 .stats .title {
@@ -37,14 +34,9 @@ h3 {
   flex: 1 1;
 }
 
-.stats li {
-  /* border: 1px solid rgba(0,0,0,0.12); */
-  padding: 0.25rem;
-  text-align: center;
-}
-
-.stats input[type="number"] {
+.exercise input[type="number"] {
   width: 4rem;
+  text-align: right;
 }
 
 .weeks {
@@ -88,4 +80,21 @@ h3 {
 
 section {
   padding: 0.5rem;
+}
+
+.mdl-layout__tab-bar {
+  height: 48px;
+  justify-content: center;
+  overflow: visible;
+  width: auto;
+  padding: 0;
+}
+
+.mdl-layout__tab {
+  cursor: pointer;
+}
+
+.mdl-layout__tab.is-active {
+  color: white;
+  border-bottom: 2px solid rgb(255,64,129);
 }

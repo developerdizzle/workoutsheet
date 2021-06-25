@@ -4,9 +4,11 @@
       "name": "Day 1 (Monday)",
       "exercises": [
         {
+          "key": "squat",
           "name": "Squats"
         },
         {
+          "key": "benchPress",
           "name": "Bench Presses"
         }
       ]
@@ -15,9 +17,11 @@
       "name": "Day 2 (Wednesday)",
       "exercises": [
         {
+          "key": "deadlift",
           "name": "Deadlifts"
         },
         {
+          "key": "overheadPress",
           "name": "Overhead Presses"
         }
       ]
@@ -26,9 +30,11 @@
       "name": "Day 3 (Friday)",
       "exercises": [
         {
+          "key": "benchPress",
           "name": "Bench Presses"
         },
         {
+          "key": "squat",
           "name": "Squats"
         }
       ]

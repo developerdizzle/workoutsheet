@@ -43,6 +43,22 @@ function App() {
 
   const [unitOfMeasure, setUnitOfMeasure] = createLocalStorageSignal('lb', 'unitOfMeasure');
 
+  const getOneRm = (key) => {
+    console.log('key', key);
+    switch (key) {
+      case 'squat':
+        return [squat1rm, setSquat1rm];
+      case 'benchPress':
+        return [benchPress1rm, setBenchPress1rm];
+      case 'deadlift':
+        return [deadlift1rm, setDeadlift1rm];
+      case 'overheadPress':
+       return [overheadPress1rm, setOverheadPress1rm];
+    }
+
+    return [];
+  };
+
   // createMemo?
   const roundingInterval = () => {
     switch (unitOfMeasure()) {
@@ -89,26 +105,8 @@ function App() {
     }
   }
 
-  const removeAllCompleted = () => {
-    wendlerBeginners.weeks.forEach((week, w) => {
-      wendlerBeginners.days.forEach((day, d) => {
-        week.sets.forEach((set, s) => {
-          day.exercises.forEach((exercise, e) => {
-            const key = `${w}-${d}-${e}-${s}-c`;
-
-            // console.log(key);
-
-            localStorage.removeItem(key);
-          });
-
-          const key = `${w}-${d}-a-${s}-c`;
-
-          // console.log(key);
-
-          localStorage.removeItem(key);
-        });
-      });
-    });
+  const uncheckAllCheckboxes = () => {
+    [].slice.call(document.getElementsByTagName('input')).filter(e => e.type=='checkbox' && e.checked == true).forEach(e => e.click());
   };
 
   return (
@@ -123,93 +121,29 @@ function App() {
             </button>
           </span>
         </div>
-      </header>
-      <section>
-      <ul class="stats">
-          <li class="title">
-            <strong>1-rep maxes:</strong>
-          </li>
-          <li class="stat">
-            Squat
-            &nbsp;
-            <input type="number" value={squat1rm()} oninput={e => setSquat1rm(e.target.value)} />
-            &nbsp;
-            {unitOfMeasure()}
-          </li>
-          <li class="stat">
-            Bench Press
-            &nbsp;
-            <input type="number" value={benchPress1rm()} oninput={e => setBenchPress1rm(e.target.value)} />
-            &nbsp;
-            {unitOfMeasure()}
-          </li>
-          <li class="stat">
-            Deadlift
-            &nbsp;
-            <input type="number" value={deadlift1rm()} oninput={e => setDeadlift1rm(e.target.value)} />
-            &nbsp;
-            {unitOfMeasure()}
-          </li>
-          <li class="stat">
-            Overhead Press
-            &nbsp;
-            <input type="number" value={overheadPress1rm()} oninput={e => setOverheadPress1rm(e.target.value)} />
-            &nbsp;
-            {unitOfMeasure()}
-          </li>
-        </ul>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+          <For each={wendlerBeginners.weeks}>
+            {(week, i) => {
+              const classes = () => {
+                return cc({
+                  'mdl-layout__tab': true,
+                  'is-active': i() === selectedWeek(),
+                });
+              };
 
-        {/* <table class="mdl-data-table">
-          <thead>
-            <tr>
-              <th class="mdl-data-table__cell--non-numeric">Stat</th>
-              <th>1-rep max</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric">Squat</td>
-              <td>
-                <input type="number" value={squat1rm()} oninput={e => setSquat1rm(e.target.value)} />
-                &nbsp;
-                {unitOfMeasure()}
-              </td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric">Bench Press</td>
-              <td>
-                <input type="number" value={benchPress1rm()} oninput={e => setBenchPress1rm(e.target.value)} />
-                &nbsp;
-                {unitOfMeasure()}
-              </td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric">Deadlift</td>
-              <td>
-                <input type="number" value={deadlift1rm()} oninput={e => setDeadlift1rm(e.target.value)} />
-                &nbsp;
-                {unitOfMeasure()}
-              </td>
-            </tr>
-            <tr>
-              <td class="mdl-data-table__cell--non-numeric">Overhead Press</td>
-              <td>
-                <input type="number" value={overheadPress1rm()} oninput={e => setOverheadPress1rm(e.target.value)} />
-                &nbsp;
-                {unitOfMeasure()}
-              </td>
-            </tr>
-          </tbody>
-        </table> */}
-      </section>
-      {/* <div class="mdl-tabs mdl-js-tabs">
-        <div class="mdl-tabs__tab-bar">
-            <a href="#starks-panel" class="mdl-tabs__tab is-active">Starks</a>
-            <a href="#lannisters-panel" class="mdl-tabs__tab">Lannisters</a>
-            <a href="#targaryens-panel" class="mdl-tabs__tab">Targaryens</a>
+              const setSelectedWeekAndClearComplete = () => {
+                setSelectedWeek(i());
+                uncheckAllCheckboxes();
+              };
+
+              return (
+                <a class={classes()} onclick={setSelectedWeekAndClearComplete}>{week.name}</a>
+              );
+            }}
+          </For>
         </div>
-      </div> */}
-      <section class="weeks">
+      </header>
+      {/* <section class="weeks">
         <div class="mdl-tabs mdl-js-tabs">
           <div class="mdl-tabs__tab-bar">
             <For each={wendlerBeginners.weeks}>
@@ -223,8 +157,8 @@ function App() {
 
                 const setSelectedWeekAndClearComplete = () => {
                   setSelectedWeek(i());
-                  removeAllCompleted();
-                }
+                  uncheckAllCheckboxes();
+                };
 
                 return (
                   <a class={classes()} onclick={setSelectedWeekAndClearComplete}>{week.name}</a>
@@ -233,7 +167,7 @@ function App() {
             </For>
           </div>
         </div>
-      </section>
+      </section> */}
       <section class="days">
         <For each={wendlerBeginners.days}>
           {(day, d) => {
@@ -242,9 +176,22 @@ function App() {
                 <h2>{day.name}</h2>
                 <For each={day.exercises}>
                   {(exercise, e) => {
+                    const [oneRm, setOneRm] = getOneRm(exercise.key);
+
+                    const trainingMax = () => {
+                      return oneRm() * 0.9;
+                    }
+
                     return (
                       <div class="exercise">
                         <h3>{exercise.name}</h3>
+                        <p>
+                          1-rep max:
+                          &nbsp;
+                          <input type="number" value={oneRm()} oninput={e => setOneRm(e.target.value)} />
+                          &nbsp;
+                          {unitOfMeasure()}
+                        </p>
                         <table class="sets mdl-data-table">
                           <thead>
                             <tr>
@@ -257,11 +204,10 @@ function App() {
                           <tbody>
                             <For each={wendlerBeginners.weeks[selectedWeek()].sets}>
                               {(set, s) => {
-                                const [completed, setCompleted] = createLocalStorageSignal(false, `${selectedWeek()}-${d()}-${e()}-${s()}-c`);
+                                const [completed, setCompleted] = createLocalStorageSignal(false, `d${d()}e${e()}s${s()}-c`);
 
                                 const weight = () => {
-                                  const trainingMax = getTrainingMaxForExercise(exercise.name);
-                                  const weight = set.percentage * trainingMax;
+                                  const weight = set.percentage * trainingMax();
 
                                   return roundWeight(weight).toString() + ' ' + unitOfMeasure().toString();
                                 };
@@ -305,17 +251,9 @@ function App() {
                     <tbody>
                       <For each={wendlerBeginners.assistance}>
                         {(assistance, a) => {
-                          const [selectedAssistance, setSelectedAssistance] = createLocalStorageSignal('', `${d()}-${assistance.name}`);
+                          const [selectedAssistance, setSelectedAssistance] = createLocalStorageSignal('', `d${d()}eAs${a()}`);
 
-                          const completedKey = () => {
-                            return `${selectedWeek()}-${d()}-a-${a()}-c`;
-                          };
-
-                          // TODO: This sticks between weeks
-                          // Need to createEffect around it?
-                          const [completed, setCompleted] = createLocalStorageSignal(false, completedKey());
-
-                          createEffect(() => console.log('hello', completedKey(), completed()));
+                          const [completed, setCompleted] = createLocalStorageSignal(false, `d${d()}eAs${a()}-c`);
 
                           return (
                             <tr>
