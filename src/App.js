@@ -11,8 +11,6 @@ const createLocalStorageSignal = (defaultValue, key) => {
 
   const [get, set] = createSignal(localStorageValue || defaultValue);
 
-  localStorage.on
-
   const newSet = value => {
     localStorage.setItem(key, JSON.stringify(value));
 
@@ -36,24 +34,24 @@ const getRoundingInterval = unitOfMeasure => {
 function App() {
   const [selectedWeek, setSelectedWeek] = createLocalStorageSignal(0, 'selectedWeek');
 
-  const [squat1rm, setSquat1rm] = createLocalStorageSignal(0, 'squat1rm');
-  const [benchPress1rm, setBenchPress1rm] = createLocalStorageSignal(0, 'benchPress1rm');
-  const [deadlift1rm, setDeadlift1rm] = createLocalStorageSignal(0, 'deadlift1rm');
-  const [overheadPress1rm, setOverheadPress1rm] = createLocalStorageSignal(0, 'overheadPress1rm');
+  const [squatTrainingMax, setSquatTrainingMax] = createLocalStorageSignal(0, 'squatTrainingMax');
+  const [benchPressTrainingMax, setBenchPressTrainingMax] = createLocalStorageSignal(0, 'benchPressTrainingMax');
+  const [deadliftTrainingMax, setDeadliftTrainingMax] = createLocalStorageSignal(0, 'deadliftTrainingMax');
+  const [overheadPressTrainingMax, setOverheadPressTrainingMax] = createLocalStorageSignal(0, 'overheadPressTrainingMax');
 
   const [unitOfMeasure, setUnitOfMeasure] = createLocalStorageSignal('lb', 'unitOfMeasure');
 
-  const getOneRm = (key) => {
-    console.log('key', key);
+  // createMemo?
+  const getTrainingMax = (key) => {
     switch (key) {
       case 'squat':
-        return [squat1rm, setSquat1rm];
+        return [squatTrainingMax, setSquatTrainingMax];
       case 'benchPress':
-        return [benchPress1rm, setBenchPress1rm];
+        return [benchPressTrainingMax, setBenchPressTrainingMax];
       case 'deadlift':
-        return [deadlift1rm, setDeadlift1rm];
+        return [deadliftTrainingMax, setDeadliftTrainingMax];
       case 'overheadPress':
-       return [overheadPress1rm, setOverheadPress1rm];
+       return [overheadPressTrainingMax, setOverheadPressTrainingMax];
     }
 
     return [];
@@ -72,28 +70,13 @@ function App() {
   };
 
   // createMemo?
-  const getTrainingMaxForExercise = name => {
-    switch (name) {
-      case 'Squats':
-        return squat1rm() * 0.9;
-      case 'Bench Presses':
-        return benchPress1rm() * 0.9;
-      case 'Deadlifts':
-        return deadlift1rm() * 0.9;
-      case 'Overhead Presses':
-        return overheadPress1rm() * 0.9;
-      default:
-        return 0;
-    }
-  };
-
-  // createMemo?
   const roundWeight = weight => {
     const interval = roundingInterval();
 
     return Math.ceil(weight / interval) * interval;
   };
 
+  // createMemo?
   const notUnitOfMeasure = () => {
     switch (unitOfMeasure()) {
       case 'lb':
@@ -115,6 +98,9 @@ function App() {
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Jim Wendler's 5/3/1 for beginners</span>
           <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="https://www.jimwendler.com/blogs/jimwendler-com/101065094-5-3-1-for-a-beginner" target="_blank">How to start</a>
+          </nav>
           <span class="unit-of-measure">
             <button class="mdl-button mdl-button--raised mdl-button--accent" onclick={e => setUnitOfMeasure(notUnitOfMeasure())}>
               {unitOfMeasure()}
@@ -143,31 +129,6 @@ function App() {
           </For>
         </div>
       </header>
-      {/* <section class="weeks">
-        <div class="mdl-tabs mdl-js-tabs">
-          <div class="mdl-tabs__tab-bar">
-            <For each={wendlerBeginners.weeks}>
-              {(week, i) => {
-                const classes = () => {
-                  return cc({
-                    'mdl-tabs__tab': true,
-                    'is-active': i() === selectedWeek(),
-                  });
-                };
-
-                const setSelectedWeekAndClearComplete = () => {
-                  setSelectedWeek(i());
-                  uncheckAllCheckboxes();
-                };
-
-                return (
-                  <a class={classes()} onclick={setSelectedWeekAndClearComplete}>{week.name}</a>
-                );
-              }}
-            </For>
-          </div>
-        </div>
-      </section> */}
       <section class="days">
         <For each={wendlerBeginners.days}>
           {(day, d) => {
@@ -176,19 +137,15 @@ function App() {
                 <h2>{day.name}</h2>
                 <For each={day.exercises}>
                   {(exercise, e) => {
-                    const [oneRm, setOneRm] = getOneRm(exercise.key);
-
-                    const trainingMax = () => {
-                      return oneRm() * 0.9;
-                    }
+                    const [trainingMax, setTrainingMax] = getTrainingMax(exercise.key);
 
                     return (
                       <div class="exercise">
                         <h3>{exercise.name}</h3>
                         <p>
-                          1-rep max:
+                          Training Max:
                           &nbsp;
-                          <input type="number" value={oneRm()} oninput={e => setOneRm(e.target.value)} />
+                          <input type="number" value={trainingMax()} oninput={e => setTrainingMax(e.target.value)} />
                           &nbsp;
                           {unitOfMeasure()}
                         </p>

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "license": "MIT",
+  "homepage": "./",
   "devDependencies": {
     "solid-js": "^0.26.5",
     "solid-scripts": "0.0.56"

@@ -60,6 +60,16 @@ h3 {
   flex-direction: row;
 }
 
+@media (max-width: 768px) {
+  .days {
+    flex-direction: column;
+  }
+
+  .day {
+    flex: 0 0;
+  }
+}
+
 .day {
   flex: 1;
 
