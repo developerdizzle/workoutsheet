@@ -7,12 +7,22 @@ import { createSignal, createEffect } from "solid-js";
 import wendlerBeginners from './workouts/wendler/beginners.json';
 
 const createLocalStorageSignal = (defaultValue, key) => {
-  const localStorageValue = JSON.parse(localStorage.getItem(key));
+  let localStorageValue;
+
+  try {
+    localStorageValue = JSON.parse(localStorage.getItem(key));
+  } catch {
+    localStorageValue = undefined;
+  }
 
   const [get, set] = createSignal(localStorageValue || defaultValue);
 
   const newSet = value => {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof value === 'undefined' || !value) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
 
     set(value);
   };
@@ -20,16 +30,48 @@ const createLocalStorageSignal = (defaultValue, key) => {
   return [get, newSet];
 };
 
-const getRoundingInterval = unitOfMeasure => {
-  switch (unitOfMeasure) {
-    case 'lb':
-      return 5;
-    case 'kg':
-      return 5;
+const IncrementalCheckbox = props => {
+  const steps = props.steps || [];
+
+  const [value, setValue] = createSignal(props.value || false);
+
+  const onchange = (e) => {
+    e.preventDefault();
+
+    let newValue = false;
+
+    if (value() !== true) {
+      const i = steps.indexOf(value());
+
+      if (i < steps.length - 1) {
+        newValue = steps[i+1];
+      } else {
+        newValue = true;
+      }
+    }
+
+    e.target.checked = newValue === true;
+
+    setValue(newValue);
+
+    props.onchange && props.onchange({
+      ...e,
+      target: {
+        ...e.target,
+        value: newValue,
+      },
+    });
   }
 
-  return 1;
-}
+  return (
+    <label class="incremental-checkbox">
+      <input type="checkbox" checked={value() === true} class="mdl-checkbox__input" onchange={onchange} />
+      <Show when={value() !== true && value() !== false}>
+        <span>{value()}</span>
+      </Show>
+    </label>
+  );
+};
 
 function App() {
   const [selectedWeek, setSelectedWeek] = createLocalStorageSignal(0, 'selectedWeek');
@@ -63,7 +105,7 @@ function App() {
       case 'lb':
         return 5;
       case 'kg':
-        return 5;
+        return 2.5;
     }
 
     return 1;
@@ -96,7 +138,7 @@ function App() {
     <div class="mdl-layout">
       <header class="mdl-layout__header mdl-layout--fixed-header">
         <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Jim Wendler's 5/3/1 for beginners</span>
+          <span class="mdl-layout-title">5/3/1 for beginners</span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="https://www.jimwendler.com/blogs/jimwendler-com/101065094-5-3-1-for-a-beginner" target="_blank">How to start</a>
@@ -182,7 +224,7 @@ function App() {
                                     <td>{weight()}</td>
                                     <td>{set.reps}</td>
                                     <td>
-                                      <input type="checkbox" class="mdl-checkbox__input" checked={completed()} onclick={e => setCompleted(e.target.checked)} />
+                                      <IncrementalCheckbox value={completed()} steps={set.steps} onchange={e => setCompleted(e.target.value)} />
                                     </td>
                                   </tr>
                                 );
@@ -208,19 +250,22 @@ function App() {
                     <tbody>
                       <For each={wendlerBeginners.assistance}>
                         {(assistance, a) => {
-                          const [selectedAssistance, setSelectedAssistance] = createLocalStorageSignal('', `d${d()}eAs${a()}`);
+                          const key = `d${d()}eAs${a()}`;
 
-                          const [completed, setCompleted] = createLocalStorageSignal(false, `d${d()}eAs${a()}-c`);
+                          const [selectedAssistance, setSelectedAssistance] = createLocalStorageSignal('', key);
+
+                          const [completed, setCompleted] = createLocalStorageSignal(false, `${key}-c`);
 
                           return (
                             <tr>
                               <td>{assistance.name}</td>
                               <td>
-                                <select value={selectedAssistance()} oninput={e => setSelectedAssistance(e.target.value)}>
+                                <input type="text" list={key} value={selectedAssistance()} oninput={e => setSelectedAssistance(e.target.value)} />
+                                <datalist id={key}>
                                   <For each={assistance.exercises}>
                                     {exercise => (<option value={exercise}>{exercise}</option>)}
                                   </For>
-                                </select>
+                                </datalist>
                               </td>
                               <td>50-100</td>
                               <td>

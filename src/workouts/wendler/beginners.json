@@ -47,27 +47,27 @@
         {
           "type": "warmup",
           "percentage": 0.4,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.5,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.6,
-          "reps": 3
+          "reps": "3"
         },
         {
           "type": "set",
           "percentage": 0.65,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "set",
           "percentage": 0.75,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "amrap",
@@ -77,7 +77,8 @@
         {
           "type": "fsl",
           "percentage": 0.65,
-          "reps": "5x5"
+          "reps": "5x5",
+          "steps": [1, 2, 3, 4]
         }
       ]
     },
@@ -87,27 +88,27 @@
         {
           "type": "warmup",
           "percentage": 0.4,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.5,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.6,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "set",
           "percentage": 0.7,
-          "reps": 3
+          "reps": "3"
         },
         {
           "type": "set",
           "percentage": 0.8,
-          "reps": 3
+          "reps": "3"
         },
         {
           "type": "amrap",
@@ -117,7 +118,8 @@
         {
           "type": "fsl",
           "percentage": 0.7,
-          "reps": "5x5"
+          "reps": "5x5",
+          "steps": [1, 2, 3, 4]
         }
       ]
     },
@@ -127,27 +129,27 @@
         {
           "type": "warmup",
           "percentage": 0.4,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.5,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "warmup",
           "percentage": 0.6,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "set",
           "percentage": 0.75,
-          "reps": 5
+          "reps": "5"
         },
         {
           "type": "set",
           "percentage": 0.85,
-          "reps": 3
+          "reps": "3"
         },
         {
           "type": "amrap",
@@ -157,7 +159,8 @@
         {
           "type": "fsl",
           "percentage": 0.75,
-          "reps": "5x5"
+          "reps": "5x5",
+          "steps": [1, 2, 3, 4]
         }
       ]
     }
