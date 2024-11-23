@@ -1,0 +1,154 @@
+body {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  /* font-size: 2.500vw; */
+  margin: 0.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  /* font-size: 1.875vw; */
+  margin: 0 0 0.5rem 0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  /* font-size: 1.563vw; */
+  margin: 0 0 0.5rem 0;
+}
+
+/* p {
+  font-size: 1.094vw;
+} */
+
+/* .mdl-data-table th,
+.mdl-data-table td {
+  font-size: 0.938vw;
+} */
+
+.mdl-layout--fixed-header {
+  display: block !important;
+}
+
+.mdl-layout__header-row {
+  height: 48px;
+  padding: 0 16px;
+}
+
+.stats .title {
+  flex: 1 1;
+}
+
+.stats .stat {
+  flex: 1 1;
+}
+
+.exercise input[type="number"] {
+  width: 4rem;
+  text-align: right;
+}
+
+.weeks {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.mdl-tabs__tab {
+  color: rgba(0,0,0,.54);
+  cursor: pointer;
+}
+
+.mdl-tabs__tab.is-active {
+  color: black;
+  border-bottom: 2px solid black;
+}
+
+.days {
+  display: flex;
+  flex-direction: row;
+}
+
+.mdl-data-table th {
+  text-align: center;
+}
+
+.mdl-data-table th,
+.mdl-data-table td {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+@media (max-width: 1081px) {
+  .days {
+    flex-direction: column;
+  }
+
+  .day {
+    flex: 0 0;
+  }
+}
+
+.day {
+  flex: 1;
+
+  text-align: center;
+}
+
+.sets {
+  margin: 0 auto;
+}
+
+.sets input {
+  max-width: 8rem;
+}
+
+.exercise {
+  margin-bottom: 1rem;
+}
+
+section {
+  padding: 0.5rem;
+}
+
+.mdl-layout__tab-bar {
+  height: 48px;
+  justify-content: center;
+  overflow: visible;
+  width: auto;
+  padding: 0;
+}
+
+.mdl-layout__tab {
+  cursor: pointer;
+}
+
+.mdl-layout__tab.is-active {
+  color: white;
+  border-bottom: 2px solid rgb(255,64,129);
+}
+
+.incremental-checkbox {
+  display: grid;
+  text-align: center;
+  align-items: center;
+}
+
+.incremental-checkbox input,
+.incremental-checkbox span {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.incremental-checkbox span {
+  color: rgba(0, 0, 0, 0.75);
+  font-weight:bold;
+}
+
+.incremental-checkbox span::selection {
+  color: none;
+  background: none;
+}

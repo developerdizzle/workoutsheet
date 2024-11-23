@@ -1,0 +1,210 @@
+{
+    "days": [
+      {
+        "name": "Day 1 (Monday)",
+        "exercises": [
+          {
+            "key": "squat",
+            "name": "Squats"
+          },
+          {
+            "key": "benchPress",
+            "name": "Bench Presses"
+          }
+        ]
+      },
+      {
+        "name": "Day 2 (Wednesday)",
+        "exercises": [
+          {
+            "key": "deadlift",
+            "name": "Deadlifts"
+          },
+          {
+            "key": "overheadPress",
+            "name": "Overhead Presses"
+          }
+        ]
+      },
+      {
+        "name": "Day 3 (Friday)",
+        "exercises": [
+          {
+            "key": "benchPress",
+            "name": "Bench Presses"
+          },
+          {
+            "key": "squat",
+            "name": "Squats"
+          }
+        ]
+      }
+    ],
+    "weeks": [
+      {
+        "name": "Week 1",
+        "sets": [
+          {
+            "type": "warmup",
+            "percentage": 0.4,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.5,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.6,
+            "reps": "3"
+          },
+          {
+            "type": "set",
+            "percentage": 0.65,
+            "reps": "5"
+          },
+          {
+            "type": "set",
+            "percentage": 0.75,
+            "reps": "5"
+          },
+          {
+            "type": "amrap",
+            "percentage": 0.85,
+            "reps": "5+"
+          },
+          {
+            "type": "fsl",
+            "percentage": 0.65,
+            "reps": "5x5",
+            "steps": [1, 2, 3, 4]
+          }
+        ]
+      },
+      {
+        "name": "Week 2",
+        "sets": [
+          {
+            "type": "warmup",
+            "percentage": 0.4,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.5,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.6,
+            "reps": "5"
+          },
+          {
+            "type": "set",
+            "percentage": 0.7,
+            "reps": "3"
+          },
+          {
+            "type": "set",
+            "percentage": 0.8,
+            "reps": "3"
+          },
+          {
+            "type": "amrap",
+            "percentage": 0.9,
+            "reps": "3+"
+          },
+          {
+            "type": "fsl",
+            "percentage": 0.7,
+            "reps": "5x5",
+            "steps": [1, 2, 3, 4]
+          }
+        ]
+      },
+      {
+        "name": "Week 3",
+        "sets": [
+          {
+            "type": "warmup",
+            "percentage": 0.4,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.5,
+            "reps": "5"
+          },
+          {
+            "type": "warmup",
+            "percentage": 0.6,
+            "reps": "5"
+          },
+          {
+            "type": "set",
+            "percentage": 0.75,
+            "reps": "5"
+          },
+          {
+            "type": "set",
+            "percentage": 0.85,
+            "reps": "3"
+          },
+          {
+            "type": "amrap",
+            "percentage": 0.95,
+            "reps": "1+"
+          },
+          {
+            "type": "fsl",
+            "percentage": 0.75,
+            "reps": "5x5",
+            "steps": [1, 2, 3, 4]
+          }
+        ]
+      }
+    ],
+    "assistance": [
+      {
+        "name": "Push",
+        "exercises": [
+          "Dips",
+          "Pushups",
+          "Flat DB Bench",
+          "Incline DB Bench",
+          "DB OHP",
+          "Tricep Extension",
+          "Tricep Pushdown"
+        ]
+      },
+      {
+        "name": "Pull",
+        "exercises": [
+          "Chinups",
+          "Pullups",
+          "Inverted Rows",
+          "DB Rows",
+          "Cable Rows",
+          "Machine Rows",
+          "Face Pulls",
+          "Band Pull-Aparts",
+          "Lat Pulldowns",
+          "Curls"
+        ]
+      },
+      {
+        "name": "Core/leg",
+        "exercises": [
+          "Ab/Core",
+          "Back Raises",
+          "Reverse Hypers",
+          "Lunges",
+          "Step Ups",
+          "Bulgarian Split Squats",
+          "KB Snatches",
+          "KB Swings"
+        ]
+      }
+    ]
+  }
