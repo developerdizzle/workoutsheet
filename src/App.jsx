@@ -99,7 +99,7 @@ function App() {
       <header>
         <nav class="navbar">
           <div class="flex-1">
-            <h1 class="text-3xl pl-4 font-bold text-primary">
+            <h1 class="text-xl md:text-3xl pl-4 font-bold text-primary">
               5/3/1 for beginners
             </h1>
           </div>
