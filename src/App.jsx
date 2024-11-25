@@ -95,36 +95,41 @@ function App() {
   };
 
   return (
-    <div class="mdl-layout">
-      <header class="mdl-layout__header mdl-layout--fixed-header">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">5/3/1 for beginners</span>
-          <div class="mdl-layout-spacer"></div>
-          <nav class="mdl-navigation">
-            <a
-              class="mdl-navigation__link"
-              href="https://www.jimwendler.com/blogs/jimwendler-com/101065094-5-3-1-for-a-beginner"
-              target="_blank"
-            >
-              How to start
-            </a>
-          </nav>
-          <span class="unit-of-measure">
-            <button
-              class="mdl-button mdl-button--raised mdl-button--accent"
-              onclick={(e) => setUnitOfMeasure(notUnitOfMeasure())}
-            >
-              {unitOfMeasure()}
-            </button>
-          </span>
-        </div>
-        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+    <>
+      <header>
+        <nav class="navbar">
+          <div class="flex-1">
+            <a class="btn btn-ghost text-xl">5/3/1 for beginners</a>
+          </div>
+          <div class="flex-none">
+            <ul class="menu menu-horizontal px-1">
+              <li class="justify-center">
+                <a
+                  class="link"
+                  href="https://www.jimwendler.com/blogs/jimwendler-com/101065094-5-3-1-for-a-beginner"
+                  target="_blank"
+                >
+                  How to start
+                </a>
+              </li>
+              <li>
+                <button
+                  class="btn btn- btn-secondary btn-square btn-outline"
+                  onclick={(e) => setUnitOfMeasure(notUnitOfMeasure())}
+                >
+                  {unitOfMeasure().toString().toUpperCase()}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div role="tablist" class="tabs tabs-bordered tabs-lg md:w-1/2 mx-auto">
           <For each={wendlerBeginners.weeks}>
             {(week, i) => {
               const classes = () => {
                 return cc({
-                  "mdl-layout__tab": true,
-                  "is-active": i() === selectedWeek(),
+                  tab: true,
+                  "tab-active": i() === selectedWeek(),
                 });
               };
 
@@ -133,7 +138,7 @@ function App() {
               };
 
               return (
-                <a class={classes()} onclick={handleClick}>
+                <a role="tab" class={classes()} onclick={handleClick}>
                   {week.name}
                 </a>
               );
@@ -150,11 +155,14 @@ function App() {
           };
 
           return (
-            <section class="days" style={style()}>
+            <section
+              class="tab-content flex flex-col md:flex-row md:space-x-8 md:justify-around p-8"
+              style={style()}
+            >
               <For each={wendlerBeginners.days}>
                 {(day, d) => {
                   return (
-                    <div class="day">
+                    <div class="prose text-center">
                       <h2>{day.name}</h2>
                       <For each={day.exercises}>
                         {(exercise, e) => {
@@ -165,21 +173,24 @@ function App() {
                           const tm = trainingMax();
 
                           return (
-                            <div class="exercise">
+                            <div>
                               <h3>{exercise.name}</h3>
-                              <p>
-                                Training Max: &nbsp;
+                              <label className="input input-bordered input-accent flex items-center gap-2">
+                                Training max
                                 <input
+                                  className="grow text-right w-0"
+                                  placeholder="Training max"
                                   type="number"
                                   value={trainingMax()}
                                   oninput={(e) =>
                                     setTrainingMax(e.target.value)
                                   }
                                 />
-                                &nbsp;
-                                {unitOfMeasure()}
-                              </p>
-                              <table class="sets mdl-data-table">
+                                <span className="badge badge-accent">
+                                  {unitOfMeasure()}
+                                </span>
+                              </label>
+                              <table class="table">
                                 <thead>
                                   <tr>
                                     <th>% of TM</th>
@@ -218,13 +229,8 @@ function App() {
 
                                       const percentage = set.percentage * 100;
 
-                                      const classes = cc({
-                                        set: true,
-                                        [`set--${set.type}`]: true,
-                                      });
-
                                       return (
-                                        <tr class={classes} title={set.tooltip}>
+                                        <tr title={set.tooltip}>
                                           <td>{percentage}%</td>
                                           <td>{weight()}</td>
                                           <td>{set.reps}</td>
@@ -247,9 +253,9 @@ function App() {
                           );
                         }}
                       </For>
-                      <div class="exercise">
+                      <div>
                         <h3>Assistance Work</h3>
-                        <table class="sets mdl-data-table">
+                        <table class="table">
                           <thead>
                             <tr>
                               <th>Type</th>
@@ -283,6 +289,7 @@ function App() {
                                     <td>
                                       <input
                                         type="text"
+                                        class="input input-bordered input-accent w-full"
                                         list={progressKey}
                                         value={selectedAssistance()}
                                         oninput={(e) =>
@@ -299,7 +306,7 @@ function App() {
                                         </For>
                                       </datalist>
                                     </td>
-                                    <td>50-100</td>
+                                    <td class="text-nowrap">50-100</td>
                                     <td>
                                       <IncrementalCheckbox
                                         value={completed}
@@ -324,13 +331,15 @@ function App() {
           );
         }}
       </For>
-      <button
-        onClick={() => clear()}
-        class="mdl-button mdl-button--raised mdl-button--accent"
-      >
-        Clear
-      </button>
-    </div>
+      <p class="text-center">
+        <button
+          class="btn btn-secondary btn-outline btn-wide"
+          onClick={() => clear()}
+        >
+          Clear
+        </button>
+      </p>
+    </>
   );
 }
 
