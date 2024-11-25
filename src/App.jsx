@@ -99,7 +99,9 @@ function App() {
       <header>
         <nav class="navbar">
           <div class="flex-1">
-            <a class="btn btn-ghost text-xl">5/3/1 for beginners</a>
+            <h1 class="text-3xl pl-4 font-bold text-primary">
+              5/3/1 for beginners
+            </h1>
           </div>
           <div class="flex-none">
             <ul class="menu menu-horizontal px-1">
@@ -126,10 +128,11 @@ function App() {
         <div role="tablist" class="tabs tabs-bordered tabs-lg md:w-1/2 mx-auto">
           <For each={wendlerBeginners.weeks}>
             {(week, i) => {
+              const isSelected = () => i() === selectedWeek();
               const classes = () => {
                 return cc({
                   tab: true,
-                  "tab-active": i() === selectedWeek(),
+                  "tab-active": isSelected(),
                 });
               };
 
