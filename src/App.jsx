@@ -2,347 +2,104 @@ import "./App.css";
 
 import cc from "classcat";
 
-import { createSignal } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createSignal, createEffect } from "solid-js";
+import { createStore, reconcile } from "solid-js/store";
 
 import { makePersisted } from "@solid-primitives/storage";
 
 import { IncrementalCheckbox } from "./IncrementalCheckbox";
+import { ProgressBar } from "./ProgressBar";
+import { Set } from "./Set";
+
 import wendlerBeginners from "./workouts/wendler/beginners.json";
 
 function App() {
-  const [selectedWeek, setSelectedWeek] = makePersisted(createSignal(0), {
-    name: "selectedWeek",
+  const [state, setState] = makePersisted(createStore(), {
+    name: "531beginner",
   });
+  // const [state, setState] = createStore();
 
-  const [squatTrainingMax, setSquatTrainingMax] = makePersisted(
-    createSignal(0),
-    { name: "squatTrainingMax" }
-  );
-  const [benchPressTrainingMax, setBenchPressTrainingMax] = makePersisted(
-    createSignal(0),
-    { name: "benchPressTrainingMax" }
-  );
-  const [deadliftTrainingMax, setDeadliftTrainingMax] = makePersisted(
-    createSignal(0),
-    { name: "deadliftTrainingMax" }
-  );
-  const [overheadPressTrainingMax, setOverheadPressTrainingMax] = makePersisted(
-    createSignal(0),
-    { name: "overheadPressTrainingMax" }
-  );
-
-  const [unitOfMeasure, setUnitOfMeasure] = makePersisted(createSignal("lb"), {
-    name: "unitOfMeasure",
+  createEffect(() => {
+    console.log("state.setProgress", state.setProgress);
   });
-
-  // createMemo?
-  const getTrainingMax = (key) => {
-    switch (key) {
-      case "squat":
-        return [squatTrainingMax, setSquatTrainingMax];
-      case "benchPress":
-        return [benchPressTrainingMax, setBenchPressTrainingMax];
-      case "deadlift":
-        return [deadliftTrainingMax, setDeadliftTrainingMax];
-      case "overheadPress":
-        return [overheadPressTrainingMax, setOverheadPressTrainingMax];
-    }
-
-    return [];
-  };
-
-  // createMemo?
-  const roundingInterval = () => {
-    switch (unitOfMeasure()) {
-      case "lb":
-        return 5;
-      case "kg":
-        return 2.5;
-    }
-
-    return 1;
-  };
-
-  // createMemo?
-  const roundWeight = (weight) => {
-    const interval = roundingInterval();
-
-    return Math.ceil(weight / interval) * interval;
-  };
-
-  // createMemo?
-  const notUnitOfMeasure = () => {
-    switch (unitOfMeasure()) {
-      case "lb":
-        return "kg";
-      case "kg":
-        return "lb";
-      default:
-        return "kg";
-    }
-  };
-
-  const [state, setState] = makePersisted(createStore({ sets: {} }), {
-    name: "workoutsheet",
-  });
-
-  const clear = () => {
-    if (confirm("Clear progress?")) {
-      setState("progress", undefined);
-      setSelectedWeek(0);
-    }
-  };
 
   return (
-    <>
-      <header>
-        <nav class="navbar">
-          <div class="flex-1">
-            <h1 class="text-xl md:text-3xl pl-4 font-bold text-primary">
-              5/3/1 for beginners
-            </h1>
-          </div>
-          <div class="flex-none">
-            <ul class="menu menu-horizontal px-1">
-              <li class="justify-center">
-                <a
-                  class="link"
-                  href="https://www.jimwendler.com/blogs/jimwendler-com/101065094-5-3-1-for-a-beginner"
-                  target="_blank"
-                >
-                  How to start
-                </a>
-              </li>
-              <li>
-                <button
-                  class="btn btn- btn-secondary btn-square btn-outline"
-                  onclick={(e) => setUnitOfMeasure(notUnitOfMeasure())}
-                >
-                  {unitOfMeasure().toString().toUpperCase()}
-                </button>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div role="tablist" class="tabs tabs-bordered tabs-lg md:w-1/2 mx-auto">
-          <For each={wendlerBeginners.weeks}>
-            {(week, i) => {
-              const isSelected = () => i() === selectedWeek();
-              const classes = () => {
-                return cc({
-                  tab: true,
-                  "tab-active": isSelected(),
-                });
-              };
+    <For each={wendlerBeginners.weeks}>
+      {(week, w) => {
+        return (
+          <>
+            <h2>{week.name}</h2>
+            <For each={wendlerBeginners.days}>
+              {(day, d) => {
+                return (
+                  <>
+                    <h3>{day.name}</h3>
+                    <For each={day.exercises}>
+                      {(exercise, e) => {
+                        const [setsCompleted, setSetsCompleted] =
+                          createSignal(0);
 
-              const handleClick = () => {
-                setSelectedWeek(i());
-              };
+                        createEffect(() =>
+                          setSetsCompleted(
+                            Object.entries(
+                              state[w()]?.[d()]?.[e()] || {}
+                            ).filter((entry) => entry[1] === true).length
+                          )
+                        );
 
-              return (
-                <a role="tab" class={classes()} onclick={handleClick}>
-                  {week.name}
-                </a>
-              );
-            }}
-          </For>
-        </div>
-      </header>
-      <For each={wendlerBeginners.weeks}>
-        {(week, w) => {
-          const style = () => {
-            return {
-              display: w() === selectedWeek() ? "" : "none",
-            };
-          };
+                        return (
+                          <>
+                            <h5>
+                              {exercise.name} - {setsCompleted()}
+                            </h5>
+                            <For each={week.sets}>
+                              {(set, s) => {
+                                const handleChange = (event) => {
+                                  setState(
+                                    reconcile({
+                                      ...state,
+                                      [w()]: {
+                                        ...state[w()],
+                                        [d()]: {
+                                          ...state[w()]?.[d()],
+                                          [e()]: {
+                                            ...state[w()]?.[d()]?.[e()],
+                                            [s()]: event.target.checked,
+                                          },
+                                        },
+                                      },
+                                    })
+                                  );
+                                };
 
-          return (
-            <section
-              class="tab-content flex flex-col md:flex-row md:space-x-8 md:justify-around p-8"
-              style={style()}
-            >
-              <For each={wendlerBeginners.days}>
-                {(day, d) => {
-                  return (
-                    <div class="prose text-center">
-                      <h2>{day.name}</h2>
-                      <For each={day.exercises}>
-                        {(exercise, e) => {
-                          const [trainingMax, setTrainingMax] = getTrainingMax(
-                            exercise.key
-                          );
-
-                          const tm = trainingMax();
-
-                          return (
-                            <div>
-                              <h3>{exercise.name}</h3>
-                              <label className="input input-bordered input-accent flex items-center gap-2">
-                                Training max
-                                <input
-                                  className="grow text-right w-0"
-                                  placeholder="Training max"
-                                  type="number"
-                                  value={trainingMax()}
-                                  oninput={(e) =>
-                                    setTrainingMax(e.target.value)
-                                  }
-                                />
-                                <span className="badge badge-accent">
-                                  {unitOfMeasure()}
-                                </span>
-                              </label>
-                              <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th>% of TM</th>
-                                    <th>Weight</th>
-                                    <th>Reps</th>
-                                    <th></th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <For
-                                    each={
-                                      wendlerBeginners.weeks[selectedWeek()]
-                                        .sets
-                                    }
-                                  >
-                                    {(set, s) => {
-                                      const progressKey = `w${w()}d${d()}e${e()}s${s()}`;
-
-                                      const completed =
-                                        state.progress?.[progressKey];
-                                      const setCompleted = (value) =>
-                                        setState("progress", {
-                                          [progressKey]: value,
-                                        });
-
-                                      const weight = () => {
-                                        const weight =
-                                          set.percentage * trainingMax();
-
-                                        return (
-                                          roundWeight(weight).toString() +
-                                          " " +
-                                          unitOfMeasure().toString()
-                                        );
-                                      };
-
-                                      const percentage = set.percentage * 100;
-
-                                      return (
-                                        <tr title={set.tooltip}>
-                                          <td>{percentage}%</td>
-                                          <td>{weight()}</td>
-                                          <td>{set.reps}</td>
-                                          <td>
-                                            <IncrementalCheckbox
-                                              value={completed}
-                                              steps={set.steps}
-                                              onchange={(e) =>
-                                                setCompleted(e.target.value)
-                                              }
-                                            />
-                                          </td>
-                                        </tr>
-                                      );
-                                    }}
-                                  </For>
-                                </tbody>
-                              </table>
-                            </div>
-                          );
-                        }}
-                      </For>
-                      <div>
-                        <h3>Assistance Work</h3>
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th>Type</th>
-                              <th>Exercise</th>
-                              <th>Reps</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <For each={wendlerBeginners.assistance}>
-                              {(assistance, a) => {
-                                const assistanceKey = `d${d()}eAs${a()}`;
-                                const progressKey = `w${w()}d${d()}eAs${a()}`;
-
-                                const [
-                                  selectedAssistance,
-                                  setSelectedAssistance,
-                                ] = makePersisted(createSignal(""), {
-                                  name: assistanceKey + "n",
-                                });
-
-                                const completed = state.progress?.[progressKey];
-                                const setCompleted = (value) =>
-                                  setState("progress", {
-                                    [progressKey]: value,
-                                  });
+                                const isChecked =
+                                  state[w()]?.[d()]?.[e()]?.[s()];
 
                                 return (
-                                  <tr>
-                                    <td>{assistance.name}</td>
-                                    <td>
-                                      <input
-                                        type="text"
-                                        class="input input-bordered input-accent w-full"
-                                        list={progressKey}
-                                        value={selectedAssistance()}
-                                        oninput={(e) =>
-                                          setSelectedAssistance(e.target.value)
-                                        }
-                                      />
-                                      <datalist id={progressKey}>
-                                        <For each={assistance.exercises}>
-                                          {(exercise) => (
-                                            <option value={exercise}>
-                                              {exercise}
-                                            </option>
-                                          )}
-                                        </For>
-                                      </datalist>
-                                    </td>
-                                    <td class="text-nowrap">50-100</td>
-                                    <td>
-                                      <IncrementalCheckbox
-                                        value={completed}
-                                        steps={[1, 2, 3, 4]}
-                                        onchange={(e) =>
-                                          setCompleted(e.target.value)
-                                        }
-                                      />
-                                    </td>
-                                  </tr>
+                                  <>
+                                    <h4>Set</h4>
+                                    <input
+                                      type="checkbox"
+                                      class="checkbox checkbox-info"
+                                      checked={isChecked}
+                                      onchange={handleChange}
+                                    />
+                                  </>
                                 );
                               }}
                             </For>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  );
-                }}
-              </For>
-            </section>
-          );
-        }}
-      </For>
-      <p class="text-center">
-        <button
-          class="btn btn-secondary btn-outline btn-wide"
-          onClick={() => clear()}
-        >
-          Clear
-        </button>
-      </p>
-    </>
+                          </>
+                        );
+                      }}
+                    </For>
+                  </>
+                );
+              }}
+            </For>
+          </>
+        );
+      }}
+    </For>
   );
 }
 

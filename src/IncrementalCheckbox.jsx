@@ -36,15 +36,15 @@ const IncrementalCheckbox = (props) => {
 
   return (
     <label class="incremental-checkbox ml-auto">
+      <Show when={value() !== true && value() !== false}>
+        <span>{value()}</span>
+      </Show>
       <input
         type="checkbox"
         checked={value() === true}
         class="checkbox checkbox-info"
         onchange={onchange}
       />
-      <Show when={value() !== true && value() !== false}>
-        <span>{value()}</span>
-      </Show>
     </label>
   );
 };
