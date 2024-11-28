@@ -2,68 +2,170 @@ import "./App.css";
 
 import cc from "classcat";
 
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, createComputed } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
 
 import { makePersisted } from "@solid-primitives/storage";
 
-import { IncrementalCheckbox } from "./IncrementalCheckbox";
-import { ProgressBar } from "./ProgressBar";
-import { Set } from "./Set";
+import { roundWeight } from "./roundWeight";
 
-import wendlerBeginners from "./workouts/wendler/beginners.json";
+import { Navigation } from "./Navigation";
+import { Tabs } from "./Tabs";
+import { Week } from "./Week";
+import { Day } from "./Day";
+
+import wendlerBeginners from "./workouts/wendler/531beginners.js";
+
+console.log(wendlerBeginners);
 
 function App() {
-  const [state, setState] = makePersisted(createStore(), {
-    name: "531beginner",
+  const [progress, setProgress] = makePersisted(createStore(), {
+    name: "progress",
   });
-  // const [state, setState] = createStore();
 
-  createEffect(() => {
-    console.log("state.setProgress", state.setProgress);
+  const [unitOfMeasure, setUnitOfMeasure] = makePersisted(createSignal("lb"), {
+    name: "unitOfMeasure",
+  });
+
+  const [selectedWeek, setSelectedWeek] = makePersisted(createSignal(0), {
+    name: "selectedWeek",
+  });
+
+  const [squatTrainingMax, setSquatTrainingMax] = makePersisted(
+    createSignal(0),
+    { name: "squatTrainingMax" }
+  );
+  const [benchPressTrainingMax, setBenchPressTrainingMax] = makePersisted(
+    createSignal(0),
+    { name: "benchPressTrainingMax" }
+  );
+  const [deadliftTrainingMax, setDeadliftTrainingMax] = makePersisted(
+    createSignal(0),
+    { name: "deadliftTrainingMax" }
+  );
+  const [overheadPressTrainingMax, setOverheadPressTrainingMax] = makePersisted(
+    createSignal(0),
+    { name: "overheadPressTrainingMax" }
+  );
+
+  // createMemo?
+  const getTrainingMax = (key) => {
+    switch (key) {
+      case "squat":
+        return [squatTrainingMax, setSquatTrainingMax];
+      case "benchPress":
+        return [benchPressTrainingMax, setBenchPressTrainingMax];
+      case "deadlift":
+        return [deadliftTrainingMax, setDeadliftTrainingMax];
+      case "overheadPress":
+        return [overheadPressTrainingMax, setOverheadPressTrainingMax];
+    }
+
+    return [];
+  };
+
+  const handleToggleUnitOfMeasure = () => {
+    // createMemo?
+    const notUnitOfMeasure = () => {
+      switch (unitOfMeasure()) {
+        case "lb":
+          return "kg";
+        case "kg":
+          return "lb";
+        default:
+          return "kg";
+      }
+    };
+
+    setUnitOfMeasure(notUnitOfMeasure());
+  };
+
+  const [week, setWeek] = createSignal(0);
+
+  createComputed(() => {
+    setWeek(wendlerBeginners.weeks[selectedWeek()]);
   });
 
   return (
-    <For each={wendlerBeginners.weeks}>
-      {(week, w) => {
-        return (
-          <>
-            <h2>{week.name}</h2>
-            <For each={wendlerBeginners.days}>
-              {(day, d) => {
-                return (
-                  <>
-                    <h3>{day.name}</h3>
-                    <For each={day.exercises}>
-                      {(exercise, e) => {
-                        const [setsCompleted, setSetsCompleted] =
-                          createSignal(0);
+    <>
+      <header>
+        <Navigation
+          unitOfMeasure={unitOfMeasure()}
+          handleToggleUnitOfMeasure={handleToggleUnitOfMeasure}
+        />
+        <Tabs
+          weeks={wendlerBeginners.weeks}
+          selectedWeek={selectedWeek()}
+          handleSelectWeek={(i) => setSelectedWeek(i)}
+        />
+      </header>
+      <Week name={week().name}>
+        <For each={wendlerBeginners.days}>
+          {(day, d) => {
+            return (
+              <Day name={day.name}>
+                <For each={day.exercises}>
+                  {(exercise, e) => {
+                    const [setsCompleted, setSetsCompleted] = createSignal(0);
 
-                        createEffect(() =>
-                          setSetsCompleted(
-                            Object.entries(
-                              state[w()]?.[d()]?.[e()] || {}
-                            ).filter((entry) => entry[1] === true).length
+                    createComputed(() => {
+                      setSetsCompleted(
+                        week()
+                          .sets.map(
+                            (set, i) =>
+                              progress[selectedWeek()]?.[d()]?.[e()]?.[i] ===
+                              true
                           )
-                        );
+                          .filter(Boolean).length
+                      );
+                    });
 
-                        return (
-                          <>
-                            <h5>
-                              {exercise.name} - {setsCompleted()}
-                            </h5>
-                            <For each={week.sets}>
+                    const [trainingMax, setTrainingMax] = getTrainingMax(
+                      exercise.key
+                    );
+
+                    const percentage = () =>
+                      (setsCompleted() * 100) / week().sets.length;
+
+                    const progressClasses = () =>
+                      cc({
+                        progress: true,
+                        "progress-info": percentage() < 100,
+                        "progress-success": percentage() === 100,
+                      });
+
+                    return (
+                      <>
+                        <h5>{exercise.name}</h5>
+                        <progress
+                          class={progressClasses()}
+                          value={percentage()}
+                          max="100"
+                        />
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>% of TM</th>
+                              <th>Weight</th>
+                              <th>Reps</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <For each={week().sets}>
                               {(set, s) => {
                                 const handleChange = (event) => {
-                                  setState(
+                                  setProgress(
                                     reconcile({
-                                      ...state,
-                                      [w()]: {
-                                        ...state[w()],
+                                      ...progress,
+                                      [selectedWeek()]: {
+                                        ...progress[selectedWeek()],
                                         [d()]: {
-                                          ...state[w()]?.[d()],
+                                          ...progress[selectedWeek()]?.[d()],
                                           [e()]: {
-                                            ...state[w()]?.[d()]?.[e()],
+                                            ...progress[selectedWeek()]?.[
+                                              d()
+                                            ]?.[e()],
                                             [s()]: event.target.checked,
                                           },
                                         },
@@ -72,34 +174,47 @@ function App() {
                                   );
                                 };
 
-                                const isChecked =
-                                  state[w()]?.[d()]?.[e()]?.[s()];
+                                const isComplete = () =>
+                                  progress[selectedWeek()]?.[d()]?.[e()]?.[s()];
+
+                                const weight = () =>
+                                  set.percentage * trainingMax();
 
                                 return (
-                                  <>
-                                    <h4>Set</h4>
-                                    <input
-                                      type="checkbox"
-                                      class="checkbox checkbox-info"
-                                      checked={isChecked}
-                                      onchange={handleChange}
-                                    />
-                                  </>
+                                  <tr>
+                                    <td>{set.percentage * 100}%</td>
+                                    <td>
+                                      {roundWeight(
+                                        weight(),
+                                        unitOfMeasure()
+                                      ).toString()}{" "}
+                                      {unitOfMeasure()}
+                                    </td>
+                                    <td>{set.reps}</td>
+                                    <td>
+                                      <input
+                                        type="checkbox"
+                                        class="checkbox checkbox-info"
+                                        checked={isComplete()}
+                                        onchange={handleChange}
+                                      />
+                                    </td>
+                                  </tr>
                                 );
                               }}
                             </For>
-                          </>
-                        );
-                      }}
-                    </For>
-                  </>
-                );
-              }}
-            </For>
-          </>
-        );
-      }}
-    </For>
+                          </tbody>
+                        </table>
+                      </>
+                    );
+                  }}
+                </For>
+              </Day>
+            );
+          }}
+        </For>
+      </Week>
+    </>
   );
 }
 
